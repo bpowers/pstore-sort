@@ -1,0 +1,15 @@
+#!/bin/bash
+
+SUFFIX="`date +'%Y.%m.%d_%T'`"
+DIR="$HOME/pstore_logs"
+
+mkdir -p "$DIR"
+
+if [ "$(ls /sys/fs/pstore | wc -l)" -eq 0 ] ; then
+    echo "nothing to do, no logs in pstore"
+    exit 1
+fi
+
+cat /sys/fs/pstore/dmesg* | pstore-sort > "$DIR/dmesg-$SUFFIX"
+
+sudo rm -f /sys/fs/pstore/dmesg*

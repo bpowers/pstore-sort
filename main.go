@@ -48,6 +48,11 @@ func (a ByTime) Less(i, j int) bool {
 	return a[i].Time < a[j].Time
 }
 
+func shouldSkip(l string) bool {
+	return strings.HasPrefix(l, "Oops#") ||
+		strings.HasPrefix(l, "Panic#") || len(l) == 0
+}
+
 func main() {
 	buf, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
@@ -59,7 +64,7 @@ func main() {
 
 	entries := make([]*Entry, 0, len(rawLines))
 	for _, l := range rawLines {
-		if strings.HasPrefix(l, "Oops#") || len(l) == 0 {
+		if shouldSkip(l) {
 			continue
 		}
 		entries = append(entries, NewEntry(l))
